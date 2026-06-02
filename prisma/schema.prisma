@@ -1,0 +1,62 @@
+// This is your Prisma schema file,
+// learn more at https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique @db.VarChar(255)
+  name      String   @db.VarChar(255)
+  password  String   @db.VarChar(255)
+  role      String   @default("ADMIN") @db.VarChar(20)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  events    Event[]  @relation("OrganizerEvents")
+}
+
+model Event {
+  id          String       @id @default(cuid())
+  title       String       @db.VarChar(255)
+  description String       @db.Text
+  date        String       @db.VarChar(20)
+  time        String       @db.VarChar(20)
+  location    String       @db.VarChar(255)
+  capacity    Int          @default(100)
+  status      String       @default("UPCOMING") @db.VarChar(20)
+  organizerId String       @db.VarChar(30)
+  organizer   User         @relation("OrganizerEvents", fields: [organizerId], references: [id])
+  participants Participant[]
+  feedbacks    Feedback[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Participant {
+  id           String    @id @default(cuid())
+  eventId      String    @db.VarChar(30)
+  event        Event     @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  studentName  String    @db.VarChar(255)
+  studentEmail String    @db.VarChar(255)
+  status       String    @default("REGISTERED") @db.VarChar(20)
+  registeredAt DateTime  @default(now())
+  checkedIn    Boolean   @default(false)
+  checkedInAt  DateTime?
+}
+
+model Feedback {
+  id           String   @id @default(cuid())
+  eventId      String   @db.VarChar(30)
+  event        Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  studentName  String   @db.VarChar(255)
+  studentEmail String   @db.VarChar(255)
+  rating       Int
+  comment      String   @db.Text
+  createdAt    DateTime @default(now())
+}
