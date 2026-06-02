@@ -22,20 +22,20 @@ model User {
 }
 
 model Event {
-  id          String       @id @default(cuid())
-  title       String       @db.VarChar(255)
-  description String       @db.Text
-  date        String       @db.VarChar(20)
-  time        String       @db.VarChar(20)
-  location    String       @db.VarChar(255)
-  capacity    Int          @default(100)
-  status      String       @default("UPCOMING") @db.VarChar(20)
-  organizerId String       @db.VarChar(30)
-  organizer   User         @relation("OrganizerEvents", fields: [organizerId], references: [id])
+  id           String        @id @default(cuid())
+  title        String        @db.VarChar(255)
+  description  String        @db.Text
+  date         String        @db.VarChar(20)
+  time         String        @db.VarChar(20)
+  location     String        @db.VarChar(255)
+  capacity     Int           @default(100)
+  status       String        @default("UPCOMING") @db.VarChar(20)
+  organizerId  String        @db.VarChar(30)
+  organizer    User          @relation("OrganizerEvents", fields: [organizerId], references: [id])
   participants Participant[]
   feedbacks    Feedback[]
-  createdAt   DateTime     @default(now())
-  updatedAt   DateTime     @updatedAt
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
 }
 
 model Participant {
